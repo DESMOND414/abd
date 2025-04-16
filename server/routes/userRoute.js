@@ -12,25 +12,25 @@ import {
   registerUser,
   updateUserProfile,
 } from "../controllers/userController.js";
-import { isAdminRoute, protectRoute } from "../middleware/authMiddleware.js";
+import { protectRoute, isAdmin } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-router.post("/register", registerUser);
+router.post("/register", protectRoute, isAdmin, registerUser);
 router.post("/login", loginUser);
 router.post("/logout", logoutUser);
 
-router.get("/get-team", protectRoute, isAdminRoute, getTeamList);
+router.get("/get-team", protectRoute, getTeamList);
 router.get("/notifications", protectRoute, getNotificationsList);
-router.get("/get-status", protectRoute, isAdminRoute, getUserTaskStatus);
+router.get("/get-status", protectRoute, getUserTaskStatus);
 
-router.put("/profile", protectRoute, updateUserProfile);
+router.put("/profile", protectRoute,  updateUserProfile);
 router.put("/read-noti", protectRoute, markNotificationRead);
 router.put("/change-password", protectRoute, changeUserPassword);
 //   FOR ADMIN ONLY - ADMIN ROUTES
 router
-  .route("/:id")
-  .put(protectRoute, isAdminRoute, activateUserProfile)
-  .delete(protectRoute, isAdminRoute, deleteUserProfile);
+    .route("/:id")
+    .put(protectRoute, activateUserProfile)
+    .delete(protectRoute, deleteUserProfile);
 
 export default router;

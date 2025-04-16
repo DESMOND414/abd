@@ -7,7 +7,7 @@ import {
   deleteGroup,
   updateGroupOwner,
 } from "../controllers/groupController.js";
-import { protectRoute, isAdminRoute } from "../middleware/authMiddleware.js";
+import { protectRoute } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
@@ -19,12 +19,12 @@ router.route("/:groupId/members")
   .post(protectRoute, addMember);
 
 router.route("/:groupId/members/:memberId")
-  .delete(protectRoute, removeMember);
+  .delete(protectRoute,  removeMember);
 
 router.route("/:groupId/owner")
   .put(protectRoute, updateGroupOwner);
 
 router.route("/:groupId")
-  .delete(protectRoute, isAdminRoute, deleteGroup);
+  .delete(protectRoute, deleteGroup);
 
 export default router;

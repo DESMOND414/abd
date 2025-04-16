@@ -60,6 +60,7 @@ const Groups = () => {
       );
       setNewGroupName("");
       fetchGroups();
+      setLoading(false);
     } catch (err) {
       setError(err.response?.data?.message || err.message);
       setLoading(false);
@@ -120,12 +121,15 @@ const Groups = () => {
   // ✅ This is the missing function you need to delete groups
   const handleDeleteGroup = async (groupId) => {
     try {
+      setLoading(true);
       const config = {
         headers: { Authorization: `Bearer ${token}` },
       };
       await axios.delete(`/api/group/${groupId}`, config);
       fetchGroups(); // Refresh list after deletion
+      setLoading(false);
     } catch (err) {
+      setLoading(false);
       setError(err.response?.data?.message || err.message);
     }
   };
@@ -134,21 +138,23 @@ const Groups = () => {
     <div className="cosmic-container p-4">
       <h1 className="text-white text-2xl mb-4">Groups</h1>
       {error && <p className="text-red-500 mb-2">{error}</p>}
-      <div className="mb-4 flex gap-2">
-        <input
-          type="text"
-          placeholder="New group name"
-          value={newGroupName}
-          onChange={(e) => setNewGroupName(e.target.value)}
-          className="p-2 rounded bg-[#1A1F2B] text-white flex-1"
-        />
-        <button
-          onClick={handleCreateGroup}
-          className="bg-[#40C4FF] px-4 rounded text-[#252A36]"
-        >
-          Create
-        </button>
-      </div>
+      {user && (
+        <div className="mb-4 flex gap-2">
+          <input
+            type="text"
+            placeholder="New group name"
+            value={newGroupName}
+            onChange={(e) => setNewGroupName(e.target.value)}
+            className="p-2 rounded bg-[#1A1F2B] text-white flex-1"
+          />
+          <button
+            onClick={handleCreateGroup}
+            className="bg-[#40C4FF] px-4 rounded text-[#252A36]"
+          >
+            Create
+          </button>
+        </div>
+      )}
       {loading ? (
         <p className="text-white">Loading groups...</p>
       ) : groups.length === 0 ? (
@@ -191,7 +197,7 @@ const Groups = () => {
                 >
                   Update
                 </button>
-                {user.isAdmin && (
+                {group.owner._id === user._id  && (
                   <button
                     onClick={() => {
                       if (

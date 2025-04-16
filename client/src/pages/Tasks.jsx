@@ -53,7 +53,7 @@ const Tasks = () => {
           className="text-[#FFFFFF] drop-shadow-[0_1px_3px_rgba(64,196,255,0.5)]"
         />
 
-        {!status && user?.isAdmin && (
+        {!status && user && (
           <Button
             label="Launch New Mission"
             icon={<IoMdAdd className="text-lg" />}

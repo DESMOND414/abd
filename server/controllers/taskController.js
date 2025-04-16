@@ -176,6 +176,10 @@ const updateTaskStage = asyncHandler(async (req, res) => {
     const { stage } = req.body;
 
     const task = await Task.findById(id);
+    
+    if (!task) {
+      return res.status(404).json({ status: false, message: "Task not found" });
+    }
 
     task.stage = stage.toLowerCase();
 
@@ -248,52 +252,40 @@ import Group from "../models/Group.js";
 
 const getTasks = asyncHandler(async (req, res) => {
   const { userId, isAdmin } = req.user;
-  const { stage, isTrashed, search } = req.query;
+  const { stage, isTrashed, search } = req.query;  
+  let query = { isTrashed: isTrashed ? true : false };  
 
-  let query = { isTrashed: isTrashed ? true : false };
+  if (stage) {    
+    query.stage = stage;  
+  }  
+  if (search) {    
+    const searchQuery = {      
+      $or: [        
+        { title: { $regex: search, $options: "i" } },        
+        { stage: { $regex: search, $options: "i" } },        
+        { priority: { $regex: search, $options: "i" } },      
+      ],    
+    };    
+    query = { ...query, ...searchQuery };  
+  }
 
-  if (!isAdmin) {
-    // Fetch groups the user belongs to
-    const userGroups = await Group.find({ members: userId }).select("_id");
-    const groupIds = userGroups.map((g) => g._id);
-
+  if (!isAdmin) {    
+    const userGroups = await Group.find({ members: userId }).select("_id");    
+    const groupIds = userGroups.map((g) => g._id);    
     query = {
       ...query,
       $or: [{ team: { $all: [userId] } }, { group: { $in: groupIds } }],
     };
   }
-  if (stage) {
-    query.stage = stage;
-  }
-
-  if (search) {
-    const searchQuery = {
-      $or: [
-        { title: { $regex: search, $options: "i" } },
-        { stage: { $regex: search, $options: "i" } },
-        { priority: { $regex: search, $options: "i" } },
-      ],
-    };
-    query = { ...query, ...searchQuery };
-  }
-
-  let queryResult = Task.find(query)
-    .populate({
-      path: "team",
-      select: "name title email",
-    })
-    .populate({
-      path: "group",
-      select: "name",
-    })
-    .sort({ _id: -1 });
-
-  const tasks = await queryResult;
-
-  res.status(200).json({
-    status: true,
-    tasks,
-  });
+  
+  let queryResult = Task.find(query)    
+    .populate({ path: "team", select: "name title email" })    
+    .populate({ path: "group", select: "name" })    
+    .sort({ _id: -1 });  
+  
+  const tasks = await queryResult;  
+  
+  res.status(200).json({ status: true, tasks });
 });
 
 const getTask = asyncHandler(async (req, res) => {

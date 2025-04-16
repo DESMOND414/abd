@@ -9,6 +9,14 @@ const createGroup = asyncHandler(async (req, res) => {
   const { name } = req.body;
   const userId = req.user.userId;
 
+  const user = await User.findById(userId);
+
+  // Check if the user exists
+  if (!user) {
+    res.status(404);
+    throw new Error("User not found");
+  }
+
   if (!name) {
     res.status(400);
     throw new Error("Group name is required");
@@ -16,7 +24,7 @@ const createGroup = asyncHandler(async (req, res) => {
 
   const group = new Group({
     name,
-    owner: userId,
+    owner: user._id, // Set the owner to the user's _id
     members: [userId],
   });
 
@@ -45,11 +53,6 @@ const addMember = asyncHandler(async (req, res) => {
     throw new Error("Group not found");
   }
 
-  if (group.owner.toString() !== userId.toString()) {
-    res.status(403);
-    throw new Error("Only group owner can add members");
-  }
-
   if (group.members.includes(memberId)) {
     res.status(400);
     throw new Error("Member already in group");
@@ -71,11 +74,6 @@ const removeMember = asyncHandler(async (req, res) => {
     throw new Error("Group not found");
   }
 
-  if (group.owner.toString() !== userId.toString()) {
-    res.status(403);
-    throw new Error("Only group owner can remove members");
-  }
-
   group.members = group.members.filter(
     (m) => m.toString() !== memberId.toString()
   );
@@ -93,11 +91,6 @@ const updateGroupOwner = asyncHandler(async (req, res) => {
   if (!group) {
     res.status(404);
     throw new Error("Group not found");
-  }
-
-  if (group.owner.toString() !== userId.toString()) {
-    res.status(403);
-    throw new Error("Only group owner can change the owner");
   }
 
   const newOwner = await User.findById(newOwnerId);
@@ -127,12 +120,7 @@ const deleteGroup = asyncHandler(async (req, res) => {
     throw new Error("Group not found");
   }
 
-  if (group.owner.toString() !== userId.toString()) {
-    res.status(403);
-    throw new Error("Only group owner can delete the group");
-  }
-
-  await group.remove();
+  await Group.deleteOne({ _id: groupId });
 
   res.json({ message: "Group deleted" });
 });

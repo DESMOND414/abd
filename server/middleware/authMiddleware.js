@@ -15,11 +15,13 @@ const protectRoute = asyncHandler(async (req, res, next) => {
       const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
 
       const resp = await User.findById(decodedToken.userId).select(
-        "isAdmin email"
+        "isAdmin email name role title"
       );
 
       req.user = {
         email: resp.email,
+        name: resp.name,
+        role: resp.role,
         isAdmin: resp.isAdmin,
         userId: decodedToken.userId,
       };
@@ -38,7 +40,7 @@ const protectRoute = asyncHandler(async (req, res, next) => {
   }
 });
 
-const isAdminRoute = (req, res, next) => {
+const isAdmin = (req, res, next) => {
   if (req.user && req.user.isAdmin) {
     next();
   } else {
@@ -48,5 +50,4 @@ const isAdminRoute = (req, res, next) => {
     });
   }
 };
-
-export { isAdminRoute, protectRoute };
+export { protectRoute, isAdmin };

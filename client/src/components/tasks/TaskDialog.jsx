@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import TaskColor from "./TaskColor";
 import { useSelector } from "react-redux";
 import AddSubTask from "./AddSubTask";
+import { useChangeTaskStageMutation, useUpdateTaskStatusMutation } from "../../redux/slices/api/taskApiSlice";
 
 const CustomTransition = ({ children }) => (
   <Transition
@@ -25,25 +26,41 @@ const CustomTransition = ({ children }) => (
   </Transition>
 );
 
-const ChangeTaskActions = ({ _id, stage }) => {
+const ChangeTaskActions = ({ _id, stage, refetch }) => {
+  const [changeStage] = useChangeTaskStageMutation();
+  const [updateTaskStatus] = useUpdateTaskStatusMutation();
+
+  const handleStageChange = async (stage, id) => {
+    const response = await changeStage({ stage, id });
+    console.log("Change Stage Response:", response);
+    if (response.data.status) {
+      await updateTaskStatus({ id, stage });
+      console.log("Task status updated in Redux store.");
+    }
+    if (refetch) {
+      refetch();
+      console.log("Data refetched after status change.");
+    }
+  };
+
   const items = [
     {
       label: "To-Do",
       stage: "todo",
       icon: <TaskColor className="bg-[#40C4FF]" />,
-      onClick: () => console.log("Change to To-Do"),
+      onClick: () => handleStageChange("todo", _id),
     },
     {
       label: "In Progress",
       stage: "in progress",
       icon: <TaskColor className="bg-[#FFCA28]" />,
-      onClick: () => console.log("Change to In Progress"),
+      onClick: () => handleStageChange("in progress", _id),
     },
     {
       label: "Completed",
       stage: "completed",
       icon: <TaskColor className="bg-[#26A69A]" />,
-      onClick: () => console.log("Change to Completed"),
+      onClick: () => handleStageChange("completed", _id),
     },
   ];
 
@@ -90,7 +107,7 @@ export default function TaskDialog({ task }) {
   const [open, setOpen] = useState(false);
 
   const navigate = useNavigate();
-
+  const refetch = () => {};
   const items = [
     {
       label: "Open Task",
@@ -144,7 +161,6 @@ export default function TaskDialog({ task }) {
             });
             if (response.ok) {
               alert("Task deleted successfully.");
-              // Optionally, refresh or navigate away
               window.location.reload();
             } else {
               alert("Failed to delete task.");
@@ -188,7 +204,7 @@ export default function TaskDialog({ task }) {
 
             <div className="px-1 py-1">
               <Menu.Item>
-                <ChangeTaskActions id={task._id} {...task} />
+                <ChangeTaskActions id={task._id} {...task} refetch={refetch} />
               </Menu.Item>
             </div>
           </Menu.Items>
