@@ -1,0 +1,184 @@
+@import url("https://fonts.googleapis.com/css2?family=Nunito+Sans:opsz,wght@6..12,200;6..12,300;6..12,400;6..12,500;6..12,600;6..12,700;6..12,800;6..12,900;6..12,1000&family=Orbitron:wght@700&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Cosmic Minimal Theme Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Nunito Sans", "Orbitron", sans-serif;
+}
+
+body {
+  background: linear-gradient(180deg, #1A1F2B, #0F141E);
+  color: #CFD8DC;
+}
+
+/* Cards */
+.cosmic-card {
+  background: #252A36;
+  border-radius: 8px;
+  border: 1px solid rgba(64, 196, 255, 0.2);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Add simple glow on hover for cards */
+.cosmic-card:hover {
+  box-shadow: 0 4px 12px rgba(64, 196, 255, 0.3);
+}
+
+/* Sidebar */
+.cosmic-sidebar-item {
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+.cosmic-sidebar-item:hover {
+  background: rgba(64, 196, 255, 0.2);
+}
+
+/* Logo */
+.cosmic-logo {
+  box-shadow: 0 0 5px rgba(64, 196, 255, 0.5); /* Simple glow, no animation */
+}
+
+/* Fonts */
+.font-orbitron {
+  font-family: "Orbitron", "Nunito Sans", sans-serif;
+}
+
+/* Form Container (for AddUser.jsx, ConfirmatioDialog.jsx, UserAction.jsx) */
+.form-container {
+  background: #252A36;
+  border: 1px solid rgba(64, 196, 255, 0.2);
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(64, 196, 255, 0.3);
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 500px; /* Slightly wider for dialogs */
+  padding: 1.5rem;
+}
+
+/* Custom Scrollbar Styles */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #546E7A;
+  border-radius: 6px;
+  display: none;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #40C4FF;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Ensure scrollbars are visible for tables */
+.cosmic-table-scroll::-webkit-scrollbar-thumb {
+  background-color: #40C4FF;
+  display: block;
+}
+
+.cosmic-table-scroll::-webkit-scrollbar-track {
+  background: #252A36;
+}
+
+/* Full-screen assets (for TaskDetail.jsx) */
+.cosmic-fullscreen-asset {
+  width: 100vw; /* Full viewport width */
+  height: auto;
+  max-height: 600px; /* Adjust for aspect ratio */
+  object-fit: cover; /* Ensures the image/video covers the area */
+  display: block;
+  margin: 0;
+  padding: 0;
+  border-radius: 0; /* Remove rounded corners for full-screen effect */
+}
+
+/* General text styling for better readability */
+.cosmic-text-large {
+  font-size: 1.5rem; /* Larger font size for titles */
+  line-height: 1.5;
+}
+
+/* Center alignment for sections */
+.cosmic-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+/* Simple glow effects (no animations) */
+.cosmic-button-glow {
+  transition: box-shadow 0.3s ease;
+}
+
+.cosmic-button-glow:hover {
+  box-shadow: 0 0 8px rgba(64, 196, 255, 0.5);
+}
+
+.cosmic-sidebar-active {
+  box-shadow: 0 0 8px rgba(64, 196, 255, 0.5);
+}
+
+.cosmic-menu-item {
+  transition: box-shadow 0.3s ease;
+}
+
+.cosmic-menu-item:hover {
+  box-shadow: 0 0 6px rgba(64, 196, 255, 0.5);
+}
+
+.cosmic-logo-text {
+  background: linear-gradient(90deg, #40C4FF, #26A69A);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Loading (Static Dots) */
+.cosmic-loading-dots {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+  margin-bottom: 5px;
+}
+
+.cosmic-loading-dot {
+  height: 12px;
+  width: 12px;
+  margin-right: 10px;
+  border-radius: 10px;
+  background-color: #40C4FF;
+}
+
+.cosmic-loading-dot:last-child {
+  margin-right: 0;
+}
+
+
+/* Task Card */
+.cosmic-task-card-priority {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+/* Dropdown Menu (TaskDialog) */
+.cosmic-dropdown-menu {
+  transition: background 0.3s ease;
+}
+
+.cosmic-dropdown-menu:hover {
+  background: rgba(64, 196, 255, 0.2);
+}
